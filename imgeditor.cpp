@@ -49,7 +49,7 @@ void get_user_selections(bool* selections);
 
 void grayScale( int red[], int green[], int blue[], int fileLen );
 			
-void flipHorizontal( int rEdits[], int gEdits[], int bEdits[], int fileLen, int cols, int rows );
+void flipHorizontal( int rEdits[], int gEdits[], int bEdits[], int fileLen, const int cols, const int rows );
 			
 void negateRed( int red[], int fileLen );
 			
@@ -235,10 +235,10 @@ int main()
 		extremeContrast( rEdits, gEdits, bEdits, fileLen );
 	}
 	
-	if (selections[FLATTEN_BLUE])
+	/*if (selections[FLATTEN_BLUE])
 	{
 		flattenBlue( bEdits, fileLen );
-	}
+	}*/
 
 
 	// for loop that writes the edited rgb values to the output file
@@ -338,18 +338,35 @@ void negateBlue( int bEdits[], int fileLen )
 // Flips the picture horizontally
 void flipHorizontal( int rEdits[], int gEdits[], int bEdits[], int fileLen, int cols, int rows )
 {
-	int tempRed;
-	int tempGreen;
-	int tempBlue;
+
+	int rArray[cols][rows];
+	int gArray[cols][rows];
+	int bArray[cols][rows];
 	for( int i = 0; i < rows; i++ )
 	{
 		for( int j = 0; j < cols; j++ )
 		{
-			rEdits[j + i] = rEdits[cols - j - 1 + i];
-			gEdits[j + i] = gEdits[cols - j - 1 + i];
-			bEdits[j + i] = bEdits[cols - j - 1 + i];
+			rArray[i][j] = rEdits[i*cols + j];
+			gArray[i][j] = gEdits[i*cols + j];
+			bArray[i][j] = bEdits[i*cols + j];
 		}
 	}
+	
+	for( int i = 0; i < rows; i++ )
+	{
+		for( int j = 0; j < cols; j++ )
+		{
+			rArray[i][j] = rArray[i][cols - j - 1];
+			gArray[i][j] = gArray[i][cols - j - 1];
+			bArray[i][j] = bArray[i][cols - j - 1];
+			rEdits[j] = rArray[i][j];
+			gEdits[j] = gArray[i][j];
+			bEdits[j] = bArray[i][j];
+		}
+	}
+
+
+	
 }
 
 // Changes the picture into a gray scale image
