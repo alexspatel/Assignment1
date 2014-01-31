@@ -339,34 +339,62 @@ void negateBlue( int bEdits[], int fileLen )
 void flipHorizontal( int rEdits[], int gEdits[], int bEdits[], int fileLen, int cols, int rows )
 {
 
-	int rArray[cols][rows];
-	int gArray[cols][rows];
-	int bArray[cols][rows];
+	int c = 0;
+	int r = 0;
+	int** rArray = new int *[c];
+	int** gArray = new int *[c];
+	int** bArray = new int *[c];
+
+	for( int i = 0; i < cols; i++ )
+	{
+		rArray[i] = new int[r];
+		gArray[i] = new int[r];
+		bArray[i] = new int[r];
+	}
+
+	for( int n = 0; n < fileLen; n++ )
+	{
+		rArray[r][c] = rEdits[n];
+		bArray[r][c] = gEdits[n];
+		gArray[r][c] = bEdits[n];
+		cols++;
+		if( c == cols && r != rows + 1 )
+		{
+			r++;
+			c = 0;
+		}
+	}
+
 	for( int i = 0; i < rows; i++ )
 	{
 		for( int j = 0; j < cols; j++ )
 		{
-			rArray[i][j] = rEdits[i*cols + j];
-			gArray[i][j] = gEdits[i*cols + j];
-			bArray[i][j] = bEdits[i*cols + j];
+			rArray[i][j] = rArray[i][cols - j];
+			gArray[i][j] = gArray[i][cols - j];
+			bArray[i][j] = bArray[i][cols - j];
 		}
 	}
-	
+
 	for( int i = 0; i < rows; i++ )
 	{
 		for( int j = 0; j < cols; j++ )
 		{
-			rArray[i][j] = rArray[i][cols - j - 1];
-			gArray[i][j] = gArray[i][cols - j - 1];
-			bArray[i][j] = bArray[i][cols - j - 1];
-			rEdits[j] = rArray[i][j];
-			gEdits[j] = gArray[i][j];
-			bEdits[j] = bArray[i][j];
+			rEdits[i *  rows + j] = rArray[i][j];
+			gEdits[i *  rows + j] = gArray[i][j];
+			bEdits[i *  rows + j] = bArray[i][j];
+			delete[j] rArray;
+			delete[j] gArray;
+			delete[j] bArray;
 		}
-	}
 
+		
+	}
+	
 
 	
+
+
+		
 }
 
 // Changes the picture into a gray scale image
